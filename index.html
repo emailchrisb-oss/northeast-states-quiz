@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Northeast States Quiz!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg1:#fff4fb; --bg2:#e6f6ff; --ink:#3b2a5a; --pink:#ff5fa2; --purple:#8b5cf6; --blue:#38bdf8;
+  --green:#22c55e; --red:#ef4444; --yellow:#ffd23f; --orange:#ff9f1c; --card:#ffffff;
+  --font:"Fredoka","Baloo 2","Chalkboard SE","Comic Sans MS","Trebuchet MS",ui-rounded,system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);color:var(--ink);background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  min-height:100%;overflow-x:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+/* header */
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:linear-gradient(90deg,#ff7eb6,#a78bfa,#60c5fa);
+  color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+header h1{margin:0;font-size:clamp(22px,4vw,34px);letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.15);flex:1;white-space:nowrap}
+.pill{background:rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font-weight:700;font-size:18px;white-space:nowrap}
+.iconbtn{min-width:56px;min-height:56px;border:none;border-radius:20px;background:rgba(255,255,255,.3);color:#fff;font-size:26px;font-weight:700}
+.iconbtn:active{transform:scale(.94)}
+.progress{height:14px;background:#fff;border-radius:999px;overflow:hidden;margin:10px 16px 0;box-shadow:inset 0 2px 4px rgba(0,0,0,.1)}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#ffd23f,#ff5fa2,#8b5cf6);transition:width .4s}
+/* buttons */
+.btn{min-height:60px;padding:10px 22px;border:none;border-radius:999px;font-size:22px;font-weight:700;color:#fff;
+  background:var(--purple);box-shadow:0 6px 0 rgba(0,0,0,.18);transition:transform .08s, box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn.pink{background:var(--pink)} .btn.blue{background:#0ea5e9} .btn.green{background:#16a34a} .btn.orange{background:var(--orange)} .btn.yellow{background:#f5b400}
+.btn.ghost{background:#fff;color:var(--purple);border:3px solid var(--purple)}
+/* start screen */
+#start{max-width:900px;margin:0 auto;padding:20px;text-align:center}
+#start h2{font-size:clamp(28px,5vw,44px);margin:10px 0 4px;color:var(--purple)}
+#start p.sub{font-size:22px;margin:0 0 18px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:10px 0 20px}
+.mode{border:none;border-radius:28px;padding:22px 16px;color:#fff;font-size:26px;font-weight:700;min-height:150px;
+  box-shadow:0 8px 0 rgba(0,0,0,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.mode small{font-size:17px;font-weight:400;opacity:.95}
+.mode .emo{font-size:46px}
+.mode:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.m1{background:linear-gradient(135deg,#34d399,#0ea5e9)} .m2{background:linear-gradient(135deg,#f472b6,#a855f7)} .m3{background:linear-gradient(135deg,#fbbf24,#fb7185)}
+.m4{background:linear-gradient(135deg,#60a5fa,#6366f1)} .m5{background:linear-gradient(135deg,#a3e635,#14b8a6)}
+.toggle{display:inline-flex;align-items:center;gap:12px;font-size:21px;background:#fff;border-radius:999px;padding:8px 20px 8px 8px;
+  border:3px solid #fcd34d;min-height:60px;cursor:pointer}
+.toggle input{display:none}
+.toggle .sw{width:64px;height:40px;border-radius:999px;background:#ddd;position:relative;transition:.2s;flex:none}
+.toggle .sw::after{content:"";position:absolute;width:32px;height:32px;border-radius:50%;background:#fff;top:4px;left:4px;transition:.2s;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.toggle input:checked + .sw{background:var(--green)}
+.toggle input:checked + .sw::after{left:28px}
+/* game layout */
+#game{display:flex;gap:16px;padding:12px 16px 16px;align-items:flex-start;max-width:1300px;margin:0 auto}
+#mapWrap{flex:1.35;min-width:0;background:#cfeeff;border-radius:28px;padding:8px;box-shadow:0 6px 0 rgba(0,0,0,.08);position:relative}
+#map{width:100%;height:auto;max-height:calc(100vh - 150px);display:block;touch-action:manipulation}
+#panel{flex:1;min-width:280px;max-width:460px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:28px;padding:18px;box-shadow:0 6px 0 rgba(0,0,0,.08)}
+.instr{font-size:23px;font-weight:600;text-align:center;margin:0}
+#msg{font-size:24px;font-weight:700;text-align:center;min-height:36px;margin:0}
+#msg.good{color:var(--green)} #msg.bad{color:var(--red)}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice{min-height:72px;border:none;border-radius:24px;font-size:21px;font-weight:700;background:#f3e8ff;color:var(--ink);
+  box-shadow:0 5px 0 #d8b4fe;padding:8px}
+.choice:active{transform:translateY(3px);box-shadow:0 2px 0 #d8b4fe}
+.choice.right{background:var(--green);color:#fff;box-shadow:0 5px 0 #15803d}
+.choice.wrong{background:var(--red);color:#fff;box-shadow:0 5px 0 #b91c1c}
+.choice:disabled{cursor:default}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+#hintBox{background:#fff8d6;border:3px dashed #fbbf24;border-radius:20px;padding:12px 14px;font-size:20px;line-height:1.35}
+#tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:70px}
+.tile{min-height:58px;padding:8px 16px;border-radius:18px;font-size:20px;font-weight:700;color:#fff;border:none;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);touch-action:none;cursor:grab}
+.tile.sel{outline:5px solid var(--yellow);transform:scale(1.07)}
+.tile.dragging{opacity:.35}
+#ghost{position:fixed;z-index:50;pointer-events:none;transform:translate(-50%,-60%) scale(1.12);opacity:.95}
+.fact{font-size:22px;line-height:1.4}
+.fact h3{margin:0 0 6px;font-size:30px;color:var(--purple)}
+/* svg */
+#map .st{stroke:#fff;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;transition:fill .3s}
+#map .ctx{fill:#e7e2ef;stroke:#fff}
+#map .q{cursor:pointer}
+#map .us{stroke-width:1}
+#map .target{animation:pulse 1s ease-in-out infinite;stroke:#ff6a00;stroke-width:4}
+@keyframes pulse{0%,100%{fill:#ffe14d}50%{fill:#ff9f1c}}
+#map .flash{animation:flash .6s 1}
+@keyframes flash{0%,100%{}30%,70%{fill:#ef4444}}
+#map .callout rect{stroke:#7c6a9a;stroke-width:1.5;vector-effect:non-scaling-stroke}
+#map .leader{stroke:#7c6a9a;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-dasharray:3 2;fill:none}
+#map .lbl{font-family:var(--font);font-weight:700;fill:#3b2a5a;paint-order:stroke;stroke:#fff;stroke-width:2.4px;stroke-linejoin:round;pointer-events:none;text-anchor:middle;dominant-baseline:central}
+#map .geo{font-family:var(--font);fill:#7aa7c7;font-style:italic;pointer-events:none;text-anchor:middle}
+#map .ring{fill:none;stroke:#ff3d7f;stroke-width:3;vector-effect:non-scaling-stroke;animation:ring 1s ease-in-out infinite}
+@keyframes ring{0%,100%{opacity:1}50%{opacity:.3}}
+#map .hit{fill:transparent;cursor:pointer}
+#map .glow{animation:glow 1.2s ease-in-out 3}
+@keyframes glow{0%,100%{}50%{fill:#fff176}}
+.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+.pop{animation:pop .4s}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+/* completion */
+#done{position:fixed;inset:0;z-index:40;background:rgba(80,40,120,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#done .card{max-width:560px;width:100%;text-align:center;position:relative;z-index:2}
+#done h2{font-size:clamp(32px,6vw,48px);margin:4px 0;color:var(--pink)}
+#done .big{font-size:26px;margin:6px 0}
+#doneStars{font-size:36px;letter-spacing:4px;color:#f59e0b;margin:8px 0;word-wrap:break-word}
+#done .row{flex-direction:column}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:45}
+.tag{display:inline-block;background:#ede9fe;color:var(--purple);border-radius:999px;padding:4px 12px;font-size:16px;font-weight:700}
+@media (max-width:820px){
+  #game{flex-direction:column;align-items:stretch}
+  #panel{max-width:none;min-width:0}
+  #map{max-height:52vh}
+  header h1{font-size:22px}
+  .pill{font-size:16px;padding:5px 10px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🗺️ Northeast States Quiz!</h1>
+  <span class="pill" id="scorePill">✅ 0 / 0</span>
+  <span class="pill" id="starPill">⭐ 0</span>
+  <button class="iconbtn" id="muteBtn" aria-label="Sound on/off" title="Sound on/off">🔊</button>
+  <button class="iconbtn hidden" id="homeBtn" aria-label="Home" title="Home">🏠</button>
+</header>
+<div class="progress hidden" id="progress"><div id="progBar"></div></div>
+
+<section id="start">
+  <h2>Hi, Map Explorer! 👋</h2>
+  <p class="sub">Pick a game to play!</p>
+  <div class="modes">
+    <button class="mode m1" data-mode="explore"><span class="emo">🔍</span>Explore<small>Tap states to learn fun facts</small></button>
+    <button class="mode m2" data-mode="name"><span class="emo">❓</span>Name That State<small>Which state is glowing?</small></button>
+    <button class="mode m3" data-mode="label"><span class="emo">🏷️</span>Label the Map<small>Drag names onto the map</small></button>
+  </div>
+  <label class="toggle"><input type="checkbox" id="dcToggle"><span class="sw"></span>⭐ Bonus: add Washington, D.C.</label>
+  <p style="font-size:18px;margin-top:22px">More challenges:</p>
+  <div class="row">
+    <button class="btn blue" id="startNE">🍁 New England Only</button>
+    <button class="btn orange" id="startUS">🇺🇸 All 50 States</button>
+  </div>
+</section>
+
+<section id="game" class="hidden">
+  <div id="mapWrap"><svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of the Northeastern United States"></svg></div>
+  <div id="panel">
+    <div class="card"><p class="instr" id="instr"></p></div>
+    <div class="card" id="qCard">
+      <p id="msg"></p>
+      <div class="choices" id="choices"></div>
+      <div id="tray"></div>
+      <div id="factBox" class="fact"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn yellow" id="hintBtn">💡 Hint</button>
+        <button class="btn green hidden" id="nextBtn">Next ➜</button>
+      </div>
+      <div id="hintBox" class="hidden" style="margin-top:12px"></div>
+    </div>
+  </div>
+</section>
+
+<div id="done" class="hidden">
+  <div class="card">
+    <h2 id="doneTitle">You did it! 🎉</h2>
+    <p class="big" id="doneMsg"></p>
+    <p class="big" id="doneScore"></p>
+    <div id="doneStars"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn pink" id="againBtn">🔁 Play Again</button>
+      <button class="btn blue" id="neBtn">🍁 New England Only</button>
+      <button class="btn orange" id="usBtn">🇺🇸 All 50 States</button>
+      <button class="btn ghost" id="menuBtn">🏠 Main Menu</button>
+    </div>
+  </div>
+</div>
+<canvas id="confetti" class="hidden"></canvas>
+<div id="ghost" class="hidden"></div>
+
+<script src="geo1.js"></script>
+<script src="geo2.js"></script>
+<script src="geo3.js"></script>
+<script src="geo4.js"></script>
+<script src="geo5.js"></script>
+<script src="geo6.js"></script>
+<script src="geo7.js"></script>
+<script src="geo8.js"></script>
+<script>
+"use strict";
+/* Geometry: US Census Bureau cartographic boundaries via us-atlas (states-albers-10m, Albers USA projection, 975x610). */
+const GEO = Object.assign({}, ...window.GEO_PARTS);
+
+const NE = ["ME","NH","VT","MA","RI","CT","NY","NJ","PA","DE","MD"];
+const NEW_ENGLAND = ["ME","NH","VT","MA","RI","CT"];
+const COLORS = {ME:"#ff8fab",NH:"#ffd166",VT:"#6fd08c",MA:"#6ec6ff",RI:"#c792ea",CT:"#ffad66",NY:"#4fd1c5",
+  NJ:"#ff7aa8",PA:"#a3e05f",DE:"#ffcf5c",MD:"#8fa8ff",DC:"#ff6b6b"};
+const US_PASTELS = ["#ffb3c7","#ffe08a","#a7e8b5","#a9dcff","#d9b8ff","#ffc999","#9fe6dd","#c9ee9b"];
+
+/* Fun facts (with name) & hints (no name, so they don't give the answer away) */
+const INFO = {
+  ME:{fact:"Maine is famous for lobsters and yummy lobster rolls! 🦞 It's the only state whose name has just one syllable.",
+      hint:"This state is famous for lobster rolls! 🦞 It's the biggest state in New England, way up in the top corner.",
+      where:"Look for the biggest state at the very top-right corner!"},
+  NH:{fact:"New Hampshire had a famous rock face called the Old Man of the Mountain (it fell in 2003). Its motto is \"Live Free or Die!\" 🏔️",
+      hint:"This state had a rock cliff shaped like an old man's face. Its motto is \"Live Free or Die!\" 🏔️",
+      where:"It's tall and skinny, right next door to Maine (on Maine's left)."},
+  VT:{fact:"Vermont makes more maple syrup than any other state! 🥞🍁",
+      hint:"This state makes the most maple syrup in the USA! 🥞🍁",
+      where:"It's the skinny state between New York and New Hampshire."},
+  MA:{fact:"In Massachusetts, the Pilgrims landed at Plymouth in 1620. Their 1621 harvest feast is remembered as the \"First Thanksgiving\"! 🦃 Basketball was invented there, too! 🏀",
+      hint:"The Pilgrims landed here in 1620 and had a famous harvest feast — the \"First Thanksgiving\"! 🦃",
+      where:"It has a hook-shaped arm (Cape Cod) sticking out into the ocean!"},
+  RI:{fact:"Rhode Island is the smallest state in the whole USA! 🐜 You can drive across it in about an hour.",
+      hint:"This is the smallest state in the whole USA! 🐜",
+      where:"It's the teeny-tiny state tucked under Massachusetts, by the ocean."},
+  CT:{fact:"Connecticut is called the Nutmeg State. A diner in New Haven, Louis' Lunch, says it served the first hamburger sandwich in 1900! 🍔",
+      hint:"This state is called the Nutmeg State, and a diner here says it made the first hamburger sandwich! 🍔",
+      where:"It's the rectangle-ish state under Massachusetts, left of Rhode Island."},
+  NY:{fact:"New York is home to the Statue of Liberty 🗽 and New York City, the biggest city in the USA!",
+      hint:"The Statue of Liberty 🗽 stands in this state's biggest city!",
+      where:"It's a big state shaped a bit like a boot or a mitten, with a long island at the bottom."},
+  NJ:{fact:"New Jersey is called the Garden State 🌻. The very first boardwalk in America was built in Atlantic City in 1870!",
+      hint:"This is the Garden State 🌻, famous for its beach boardwalks!",
+      where:"It's on the ocean, between New York and Delaware, shaped like a wiggly S."},
+  PA:{fact:"Pennsylvania has the Liberty Bell 🔔 in Philadelphia and the town of Hershey, home of Hershey's chocolate! 🍫",
+      hint:"The Liberty Bell 🔔 is here, and so is a town named after a famous chocolate! 🍫",
+      where:"It's the big rectangle-shaped state right under New York."},
+  DE:{fact:"Delaware was the very first state! It was the first to say yes to the U.S. Constitution, on December 7, 1787. 🥇",
+      hint:"This was the very FIRST state to join the USA! 🥇",
+      where:"It's a tiny state next to the ocean, just below New Jersey."},
+  MD:{fact:"Maryland is famous for blue crabs! 🦀 \"The Star-Spangled Banner\" was written there in 1814 about a battle at Fort McHenry.",
+      hint:"This state is famous for blue crabs 🦀, and our national anthem was written here!",
+      where:"It's below Pennsylvania, with a big bay (the Chesapeake) splitting it in two."},
+  DC:{fact:"Washington, D.C. is the capital of the USA, and the President lives there in the White House! 🏛️ It's not a state — it's a special district.",
+      hint:"The President lives here in the White House! 🏛️ It's the nation's capital.",
+      where:"It's a teeny diamond tucked into Maryland."}
+};
+
+/* Capitals + regions for the All 50 round hints */
+const CAPITALS = {AL:"Montgomery",AK:"Juneau",AZ:"Phoenix",AR:"Little Rock",CA:"Sacramento",CO:"Denver",CT:"Hartford",DE:"Dover",FL:"Tallahassee",GA:"Atlanta",
+  HI:"Honolulu",ID:"Boise",IL:"Springfield",IN:"Indianapolis",IA:"Des Moines",KS:"Topeka",KY:"Frankfort",LA:"Baton Rouge",ME:"Augusta",MD:"Annapolis",
+  MA:"Boston",MI:"Lansing",MN:"Saint Paul",MS:"Jackson",MO:"Jefferson City",MT:"Helena",NE:"Lincoln",NV:"Carson City",NH:"Concord",NJ:"Trenton",
+  NM:"Santa Fe",NY:"Albany",NC:"Raleigh",ND:"Bismarck",OH:"Columbus",OK:"Oklahoma City",OR:"Salem",PA:"Harrisburg",RI:"Providence",SC:"Columbia",
+  SD:"Pierre",TN:"Nashville",TX:"Austin",UT:"Salt Lake City",VT:"Montpelier",VA:"Richmond",WA:"Olympia",WV:"Charleston",WI:"Madison",WY:"Cheyenne"};
+const REGION = {};
+[["Northeast","ME NH VT MA RI CT NY NJ PA"],["Midwest","OH IN IL MI WI MN IA MO ND SD NE KS"],
+ ["South","DE MD VA WV KY TN NC SC GA FL AL MS AR LA OK TX"],["West","MT ID WY CO NM AZ UT NV CA OR WA AK HI"]]
+ .forEach(([r,s])=>s.split(" ").forEach(a=>REGION[a]=r));
+
+/* Label positions inside states (viewBox units) and callouts for small ones */
+const LABELS = {ME:{x:922,y:92,s:7,t:["Maine"]},NH:{x:893,y:147,s:3.7,t:["New","Hampshire"]},VT:{x:871,y:137,s:4.2,t:["Vermont"]},
+  MA:{x:887,y:168,s:4.4,t:["Massachusetts"]},CT:{x:886,y:193,s:4,t:["Connecticut"]},NY:{x:822,y:162,s:7.5,t:["New York"]},
+  PA:{x:806,y:226,s:7.5,t:["Pennsylvania"]}};
+const CALLOUTS = {RI:{x:918,y:190,from:[906,185]},NJ:{x:886,y:218,from:[866,226]},DE:{x:880,y:244,from:[858,252]},
+  MD:{x:872,y:276,from:[857,272]},DC:{x:786,y:281,from:[827.8,267.3]}};
+const CW=44, CH=15;
+const HITS = {RI:[905,186,5],DE:[855,256,4.5],DC:[827.8,267.3,4.5]};
+const VB_NE = "748 40 228 262", VB_US = "0 0 975 610";
+
+const CHEERS = ["Great job! 🌟","You got it! 🎉","Super smart! 🧠","Awesome! 🙌","Way to go! 🚀","Fantastic! 🌈","Yay! You're a map star! ⭐","Brilliant! 💖","Nailed it! 🎯","Woo-hoo! 🥳"];
+const OOPS = ["Oops! Nice try! 💪","Almost! Keep going! 🌈","Not quite — you'll get the next one! 😊"];
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const SVGNS = "http://www.w3.org/2000/svg";
+const rnd = a => a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function el(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const nameOf = a => a==="DC" ? "Washington, D.C." : GEO[a].n;
+let store = {}; try{ store = window.localStorage || {}; }catch(e){ store = {}; }
+
+/* ---------- sound (Web Audio, unlocked on first gesture) ---------- */
+let actx = null, muted = false;
+try{ muted = store.neqMuted === "1"; }catch(e){}
+function unlockAudio(){
+  try{
+    if(!actx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) actx = new AC(); }
+    if(actx && actx.state === "suspended") actx.resume();
+  }catch(e){}
+}
+document.addEventListener("pointerdown", unlockAudio, true);
+document.addEventListener("touchend", unlockAudio, true);
+function tone(freq,start,dur,type,vol){
+  if(muted||!actx) return;
+  const t0 = actx.currentTime + start;
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type||"sine"; o.frequency.setValueAtTime(freq,t0);
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol||0.25,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g); g.connect(actx.destination); o.start(t0); o.stop(t0+dur+0.05);
+}
+const sfx = {
+  good(){ tone(784,0,0.18,"triangle",0.3); tone(1175,0.13,0.32,"triangle",0.3); },
+  bad(){ tone(160,0,0.3,"sawtooth",0.07); tone(130,0.12,0.3,"sine",0.15); },
+  tap(){ tone(660,0,0.08,"sine",0.12); },
+  fanfare(){ [[523,0],[659,.14],[784,.28],[1047,.42],[784,.62],[1047,.76]].forEach(([f,t],i)=>tone(f,t,i===5?0.7:0.2,"triangle",0.28)); tone(523,.76,0.7,"sine",0.15); }
+};
+function setMute(m){ muted=m; $("muteBtn").textContent = m ? "🔇" : "🔊"; try{ store.neqMuted = m?"1":"0"; }catch(e){} }
+$("muteBtn").addEventListener("click",()=>{ unlockAudio(); setMute(!muted); if(!muted) sfx.tap(); });
+setMute(muted);
+
+/* ---------- build map ---------- */
+const svg = $("map");
+const gStates = el("g",{id:"states"},svg);
+const gDecor = el("g",{id:"decor"},svg);
+const gCallouts = el("g",{id:"callouts"},svg);
+const gLabels = el("g",{id:"labels"},svg);
+const gHits = el("g",{id:"hits"},svg);
+const gRing = el("g",{id:"ring"},svg);
+const paths = {};
+Object.keys(GEO).forEach(a=>{
+  const p = el("path",{d:GEO[a].d,"class":"st","data-id":a,id:"st-"+a},gStates);
+  paths[a]=p;
+});
+// geography labels
+const tCan = el("text",{x:842,y:70,"class":"geo","font-size":8},gDecor); tCan.textContent="CANADA";
+const tAtl = el("text",{x:935,y:240,"class":"geo","font-size":7},gDecor); tAtl.textContent="Atlantic";
+const tAtl2 = el("text",{x:935,y:249,"class":"geo","font-size":7},gDecor); tAtl2.textContent="Ocean";
+const callouts = {};
+Object.keys(CALLOUTS).forEach(a=>{
+  const c = CALLOUTS[a];
+  const g = el("g",{"class":"callout","data-id":a},gCallouts);
+  // leader from state point to nearest edge of box
+  const bx = Math.max(c.x, Math.min(c.from[0], c.x+CW)), by = Math.max(c.y, Math.min(c.from[1], c.y+CH));
+  el("line",{x1:c.from[0],y1:c.from[1],x2:bx,y2:by,"class":"leader"},g);
+  el("circle",{cx:c.from[0],cy:c.from[1],r:1.2,fill:"#7c6a9a"},g);
+  const r = el("rect",{x:c.x,y:c.y,width:CW,height:CH,rx:5,"data-id":a,"class":"q"},g);
+  callouts[a] = {g,r};
+});
+const hits = {};
+Object.keys(HITS).forEach(a=>{ const h=HITS[a]; hits[a]=el("circle",{cx:h[0],cy:h[1],r:h[2],"class":"hit q","data-id":a},gHits); });
+
+/* ---------- state ---------- */
+const S = { mode:null, set:[], queue:[], cur:null, correct:0, attempts:0, stars:0, done:0, total:0,
+            firstTry:true, locked:false, placed:{}, us:false, selTile:null, tileMiss:{}, explored:{} , roundKind:"ne"};
+
+function activeView(us){
+  svg.setAttribute("viewBox", us?VB_US:VB_NE);
+  gCallouts.style.display = us?"none":""; gDecor.style.display = us?"none":""; gHits.style.display = us?"none":"";
+}
+function stateFill(a){
+  if(S.us) return US_PASTELS[Object.keys(GEO).indexOf(a)%US_PASTELS.length];
+  if(!S.set.includes(a)) return "#e7e2ef";
+  if(S.mode==="explore") return COLORS[a];
+  if(S.mode==="label") return S.placed[a] ? COLORS[a] : "#fffaf0";
+  return "#d9ccf2"; // name mode, non-target
+}
+function paintMap(){
+  Object.keys(paths).forEach(a=>{
+    const p = paths[a]; const inSet = S.set.includes(a);
+    p.setAttribute("class","st"+(S.us?" us":"")+(inSet && !S.us?" q":"")+(!inSet && !S.us?" ctx":""));
+    p.style.fill = stateFill(a);
+  });
+  Object.keys(callouts).forEach(a=>{
+    const show = S.set.includes(a) && !S.us;
+    callouts[a].g.style.display = show?"":"none";
+    callouts[a].r.style.fill = stateFill(a);
+  });
+  Object.keys(hits).forEach(a=>{ hits[a].style.display = S.set.includes(a)?"":"none"; });
+  if(!S.set.includes("DC") && !S.us) paths.DC.style.fill = stateFill("MD");
+  drawLabels();
+}
+function addLabel(a, forceCallout){
+  if(CALLOUTS[a]){
+    const c = CALLOUTS[a];
+    const t = el("text",{x:c.x+CW/2,y:c.y+CH/2,"class":"lbl","font-size":a==="DC"?4.1:4.6},gLabels);
+    t.textContent = a==="DC" ? "Washington DC" : nameOf(a);
+    return t;
+  }
+  const L = LABELS[a]; if(!L) return null;
+  const t = el("text",{x:L.x,y:L.y,"class":"lbl","font-size":L.s},gLabels);
+  L.t.forEach((line,i)=>{ const ts=el("tspan",{x:L.x,dy:i===0?(-(L.t.length-1)*0.55*L.s):L.s*1.1},t); ts.textContent=line; });
+  return t;
+}
+function drawLabels(){
+  gLabels.innerHTML = "";
+  if(S.us) return;
+  S.set.forEach(a=>{
+    const show = (S.mode==="explore" && S.explored[a]) || (S.mode==="label" && S.placed[a]);
+    if(show){ const t=addLabel(a); if(t && S.lastPlaced===a){ t.classList.add("pop"); t.style.transformOrigin="center"; t.style.transformBox="fill-box"; } }
+  });
+}
+function bringToFront(a){ gStates.appendChild(paths[a]); if(a!=="DC") gStates.appendChild(paths.DC); }
+function setTarget(a){
+  Object.values(paths).forEach(p=>p.classList.remove("target"));
+  Object.values(callouts).forEach(c=>c.r.classList.remove("target"));
+  gRing.innerHTML = "";
+  if(!a) return;
+  paths[a].classList.add("target"); bringToFront(a);
+  if(!S.us && callouts[a]) callouts[a].r.classList.add("target");
+  if(S.us){
+    const b = GEO[a].b, w=b[2]-b[0], h=b[3]-b[1];
+    if(Math.max(w,h) < 40){ const c=GEO[a].c; el("circle",{cx:(b[0]+b[2])/2,cy:(b[1]+b[3])/2,r:Math.max(14,Math.max(w,h)*0.8),"class":"ring"},gRing); }
+  } else if(a==="DC"){ el("circle",{cx:827.8,cy:267.3,r:5,"class":"ring"},gRing); }
+}
+
+/* ---------- UI helpers ---------- */
+function updateHUD(){
+  $("scorePill").textContent = `✅ ${S.correct} / ${S.attempts}`;
+  $("starPill").textContent = `⭐ ${S.stars}`;
+  $("progBar").style.width = (S.total? (100*S.done/S.total):0) + "%";
+}
+function setMsg(t,cls){ const m=$("msg"); m.textContent=t; m.className=cls||""; }
+function hideHint(){ $("hintBox").classList.add("hidden"); }
+function showHint(text){ const h=$("hintBox"); h.innerHTML = "💡 " + text; h.classList.remove("hidden"); h.classList.remove("pop"); void h.offsetWidth; h.classList.add("pop"); }
+function show(id,on){ $(id).classList.toggle("hidden",!on); }
+
+function goHome(){
+  stopConfetti(); show("done",false); show("game",false); show("progress",false); show("homeBtn",false); show("start",true);
+  S.mode=null; setTarget(null); cancelDrag(); clearTimeout(S.timer);
+  ["scorePill","starPill"].forEach(id=>$(id).style.visibility="hidden");
+}
+$("homeBtn").addEventListener("click",goHome);
+$("menuBtn").addEventListener("click",goHome);
+
+function baseSet(kind){
+  if(kind==="newengland") return NEW_ENGLAND.slice();
+  const s = NE.slice(); if($("dcToggle").checked) s.push("DC"); return s;
+}
+function startMode(mode, kind){
+  stopConfetti(); show("done",false);
+  clearTimeout(S.timer); cancelDrag();
+  S.mode = mode; S.roundKind = kind||"ne"; S.us = (kind==="us");
+  S.set = S.us ? Object.keys(GEO).filter(a=>a!=="DC") : baseSet(kind);
+  S.correct=0; S.attempts=0; S.stars=0; S.done=0; S.placed={}; S.explored={}; S.tileMiss={}; S.selTile=null; S.lastPlaced=null;
+  S.total = S.set.length; S.queue = shuffle(S.set); S.cur=null; S.locked=false;
+  show("start",false); show("game",true); show("homeBtn",true);
+  show("progress", mode!=="explore");
+  ["scorePill","starPill"].forEach(id=>$(id).style.visibility = mode==="explore"?"hidden":"visible");
+  activeView(S.us); setTarget(null); paintMap();
+  $("choices").innerHTML=""; $("tray").innerHTML=""; $("factBox").innerHTML=""; hideHint(); setMsg("");
+  show("hintBtn", mode!=="explore"); show("nextBtn",false); show("choices",mode==="name"); show("tray",mode==="label"); show("factBox",mode==="explore");
+  if(mode==="explore"){
+    $("instr").textContent = "Tap any colorful state to learn a fun fact! 🔍";
+    $("factBox").innerHTML = '<h3>👆 Tap a state!</h3>Each state has a secret fun fact.';
+  } else if(mode==="name"){
+    $("instr").textContent = S.us ? "🇺🇸 All 50 States: which state is glowing?" : "Which state is glowing? Tap its name!";
+    nextQuestion();
+  } else {
+    $("instr").textContent = "Drag a name onto its state (or tap a name, then tap the state)!";
+    buildTray();
+  }
+  updateHUD();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{ sfx.tap(); startMode(b.dataset.mode,"ne"); }));
+$("startNE").addEventListener("click",()=>startMode("name","newengland"));
+$("startUS").addEventListener("click",()=>startMode("name","us"));
+$("againBtn").addEventListener("click",()=>startMode(S.mode,S.roundKind));
+$("neBtn").addEventListener("click",()=>startMode(S.mode==="label"?"label":"name","newengland"));
+$("usBtn").addEventListener("click",()=>startMode("name","us"));
+
+/* ---------- Explore ---------- */
+function explore(a){
+  sfx.tap(); S.explored[a]=true;
+  $("factBox").innerHTML = `<h3>${nameOf(a)}</h3>${INFO[a].fact}`;
+  $("factBox").classList.remove("pop"); void $("factBox").offsetWidth; $("factBox").classList.add("pop");
+  drawLabels();
+  paths[a].classList.remove("glow"); void paths[a].getBBox(); paths[a].classList.add("glow");
+}
+
+/* ---------- Name That State ---------- */
+function pickChoices(a){
+  let pool = S.set.filter(x=>x!==a);
+  if(S.us){ // 2 nearby states + 1 random to make it a bit tricky
+    const c=GEO[a].c; pool.sort((x,y)=>{const p=GEO[x].c,q=GEO[y].c;return ((p[0]-c[0])**2+(p[1]-c[1])**2)-((q[0]-c[0])**2+(q[1]-c[1])**2);});
+    const near = shuffle(pool.slice(0,5)).slice(0,2); const rest = shuffle(pool.filter(x=>!near.includes(x))).slice(0,1);
+    return shuffle([a,...near,...rest]);
+  }
+  return shuffle([a,...shuffle(pool).slice(0,3)]);
+}
+function nextQuestion(){
+  hideHint(); show("nextBtn",false); setMsg("");
+  if(!S.queue.length){ setTarget(null); return finish(); }
+  S.cur = S.queue.shift(); S.firstTry=true; S.locked=false;
+  setTarget(S.cur);
+  const box = $("choices"); box.innerHTML="";
+  pickChoices(S.cur).forEach(c=>{
+    const b=document.createElement("button"); b.className="choice"; b.textContent=nameOf(c); b.dataset.id=c;
+    b.addEventListener("click",()=>answer(c,b)); box.appendChild(b);
+  });
+}
+function answer(c,btn){
+  if(S.locked) return; S.locked=true;
+  S.attempts++;
+  const ok = c===S.cur;
+  [...$("choices").children].forEach(b=>{ b.disabled=true; if(b.dataset.id===S.cur) b.classList.add("right"); });
+  if(ok){
+    S.correct++; S.stars++; sfx.good(); setMsg(rnd(CHEERS),"good");
+    paths[S.cur].classList.remove("target"); paths[S.cur].style.fill = S.us? "#86efac" : COLORS[S.cur];
+    if(callouts[S.cur]) { callouts[S.cur].r.classList.remove("target"); callouts[S.cur].r.style.fill = COLORS[S.cur]; }
+    gRing.innerHTML="";
+    S.done++; updateHUD();
+    S.timer = setTimeout(nextQuestion, 1400);
+  } else {
+    btn.classList.add("wrong"); btn.classList.add("shake"); sfx.bad();
+    setMsg(`${rnd(OOPS)} It's ${nameOf(S.cur)}.`,"bad");
+    S.done++; updateHUD(); show("nextBtn",true);
+  }
+}
+$("nextBtn").addEventListener("click",()=>{ clearTimeout(S.timer); nextQuestion(); });
+
+function hintText(a){
+  if(INFO[a]) return S.mode==="label" ? `<b>${nameOf(a)}:</b> ${INFO[a].where}` : INFO[a].hint;
+  return `This state's capital city is <b>${CAPITALS[a]}</b>, and it's in the <b>${REGION[a]}</b>.`;
+}
+$("hintBtn").addEventListener("click",()=>{
+  sfx.tap();
+  if(S.mode==="name" && S.cur) showHint(hintText(S.cur));
+  else if(S.mode==="label"){
+    const a = S.selTile || firstUnplaced();
+    if(!a) return;
+    if(!S.selTile) selectTile(a);
+    showHint(hintText(a) + "<br>" + INFO[a].hint);
+  }
+});
+
+/* ---------- Label the Map ---------- */
+function firstUnplaced(){ const t=$("tray").querySelector(".tile"); return t? t.dataset.id : null; }
+function buildTray(){
+  const tray=$("tray"); tray.innerHTML="";
+  shuffle(S.set).forEach(a=>{
+    const t=document.createElement("button"); t.className="tile"; t.textContent=nameOf(a); t.dataset.id=a; t.style.background=darken(COLORS[a]);
+    t.addEventListener("pointerdown",e=>tileDown(e,t)); tray.appendChild(t);
+  });
+}
+function darken(hex){ const n=parseInt(hex.slice(1),16); const f=.78; const r=Math.round((n>>16&255)*f),g=Math.round((n>>8&255)*f),b=Math.round((n&255)*f); return `rgb(${r},${g},${b})`; }
+function selectTile(a){
+  S.selTile=a;
+  [...$("tray").children].forEach(t=>t.classList.toggle("sel",t.dataset.id===a));
+  if(a){ setMsg(`Now tap where ${nameOf(a)} goes! 👆`,""); }
+}
+let drag=null;
+function tileDown(e,t){
+  if(S.mode!=="label") return;
+  e.preventDefault();
+  drag={t,id:t.dataset.id,x0:e.clientX,y0:e.clientY,moved:false,pid:e.pointerId};
+  try{ t.setPointerCapture(e.pointerId); }catch(_){}
+}
+function cancelDrag(){ if(drag){ drag.t.classList.remove("dragging"); } drag=null; show("ghost",false); }
+document.addEventListener("pointermove",e=>{
+  if(!drag || e.pointerId!==drag.pid) return;
+  const dx=e.clientX-drag.x0, dy=e.clientY-drag.y0;
+  if(!drag.moved && dx*dx+dy*dy>64){
+    drag.moved=true; drag.t.classList.add("dragging");
+    const g=$("ghost"); g.className="tile"; g.id="ghost"; g.textContent=drag.t.textContent; g.style.background=drag.t.style.background; show("ghost",true);
+  }
+  if(drag.moved){ const g=$("ghost"); g.style.left=e.clientX+"px"; g.style.top=e.clientY+"px"; }
+});
+function targetAt(x,y){
+  const els = document.elementsFromPoint ? document.elementsFromPoint(x,y) : [document.elementFromPoint(x,y)];
+  for(const n of els){ if(!n) continue; if(n.id==="ghost") continue; const id=n.getAttribute && n.getAttribute("data-id"); if(id && n.closest && n.closest("#map")) return id; }
+  return null;
+}
+function endDrag(e){
+  if(!drag || e.pointerId!==drag.pid) return;
+  const d=drag; cancelDrag();
+  if(!d.moved){ sfx.tap(); selectTile(S.selTile===d.id?null:d.id); if(S.selTile!==d.id) setMsg(""); return; }
+  const tgt = targetAt(e.clientX,e.clientY);
+  if(tgt) tryPlace(d.id,tgt); else setMsg("Drop the name right on a state! 😊","");
+}
+document.addEventListener("pointerup",endDrag);
+document.addEventListener("pointercancel",e=>{ if(drag && e.pointerId===drag.pid) cancelDrag(); });
+
+function tryPlace(id,tgt){
+  if(S.placed[tgt]){ setMsg("That one's already done! Try another state. 😊",""); return; }
+  if(!S.set.includes(tgt)) { setMsg("That state isn't in this game — try a colorful one!",""); return; }
+  S.attempts++;
+  const tile = $("tray").querySelector(`.tile[data-id="${id}"]`);
+  if(id===tgt){
+    S.correct++; if(!S.tileMiss[id]) S.stars++;
+    S.placed[id]=true; S.done++; S.lastPlaced=id; sfx.good(); setMsg(rnd(CHEERS),"good");
+    if(tile) tile.remove(); S.selTile=null; selectTile(null); hideHint();
+    paintMap(); updateHUD();
+    if(S.done>=S.total) setTimeout(finish,900);
+  } else {
+    S.tileMiss[id]=(S.tileMiss[id]||0)+1; sfx.bad();
+    setMsg(`${rnd(OOPS)} That's not ${nameOf(id)}.`,"bad");
+    const p = paths[tgt]; p.classList.remove("flash"); void p.getBBox(); p.classList.add("flash");
+    if(callouts[tgt]){ const r=callouts[tgt].r; r.classList.remove("flash"); void r.getBBox(); r.classList.add("flash"); }
+    if(tile){ tile.classList.remove("shake"); void tile.offsetWidth; tile.classList.add("shake"); }
+    $("mapWrap").classList.remove("shake"); void $("mapWrap").offsetWidth; $("mapWrap").classList.add("shake");
+    if(S.tileMiss[id]>=2){ // gentle help: show where it goes
+      showHint(hintText(id)); const q=paths[id]; q.classList.remove("glow"); void q.getBBox(); q.classList.add("glow");
+      if(callouts[id]){ const r=callouts[id].r; r.classList.remove("glow"); void r.getBBox(); r.classList.add("glow"); }
+    }
+    updateHUD();
+  }
+}
+
+/* map taps */
+svg.addEventListener("click",e=>{
+  const n=e.target.closest("[data-id]"); if(!n) return; const a=n.getAttribute("data-id");
+  if(!S.set.includes(a) || S.us) return;
+  if(S.mode==="explore") explore(a);
+  else if(S.mode==="label"){ if(S.selTile) tryPlace(S.selTile,a); else if(!S.placed[a]) setMsg("First tap a name below, then tap the state! 👇",""); }
+});
+
+/* ---------- Completion + confetti ---------- */
+function finish(){
+  if(!$("done").classList.contains("hidden")) return;
+  sfx.fanfare(); updateHUD();
+  const pct = S.attempts? S.correct/S.attempts : 0;
+  $("doneTitle").textContent = pct>=0.9? "WOW! Map Champion! 🏆" : pct>=0.6? "You did it! 🎉" : "Great practice! 🌈";
+  $("doneMsg").textContent = S.us ? "You went through ALL 50 states! Amazing!" :
+     (S.roundKind==="newengland" ? "You finished all of New England!" : "You finished the whole Northeast!");
+  $("doneScore").textContent = `Score: ${S.correct} correct out of ${S.attempts} tries`;
+  const st = S.stars;
+  $("doneStars").textContent = st===0 ? "⭐ Keep practicing! ⭐" : (st<=15 ? "⭐".repeat(st) : "⭐ × " + st) ;
+  show("done",true); startConfetti();
+}
+let confRAF=null, confParts=[];
+function startConfetti(){
+  const c=$("confetti"); show("confetti",true); const ctx=c.getContext("2d");
+  const dpr=window.devicePixelRatio||1; c.width=innerWidth*dpr; c.height=innerHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const cols=["#ff5fa2","#ffd23f","#8b5cf6","#38bdf8","#22c55e","#ff9f1c"];
+  confParts = Array.from({length:180},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight,w:6+Math.random()*8,h:8+Math.random()*10,
+    vy:2+Math.random()*3,vx:-1.5+Math.random()*3,r:Math.random()*6,vr:-.2+Math.random()*.4,c:rnd(cols)}));
+  const t0=performance.now();
+  cancelAnimationFrame(confRAF);
+  (function tick(t){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    const keep = t-t0 < 4500;
+    confParts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; if(p.y>innerHeight+20 && keep){ p.y=-20; p.x=Math.random()*innerWidth; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(keep || confParts.some(p=>p.y<innerHeight+20)) confRAF=requestAnimationFrame(tick); else stopConfetti();
+  })(t0);
+}
+function stopConfetti(){ cancelAnimationFrame(confRAF); show("confetti",false); }
+
+["scorePill","starPill"].forEach(id=>$(id).style.visibility="hidden");
+activeView(false); S.set=baseSet("ne"); S.mode="explore"; paintMap(); S.mode=null;
+</script>
+</body>
+</html>
